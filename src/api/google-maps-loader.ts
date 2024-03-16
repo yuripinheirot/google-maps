@@ -7,14 +7,10 @@ export const googleMapsLoader = async () => {
     version: 'weekly',
   })
 
-  return loader.load().then(async () => {
-    const { Map } = (await google.maps.importLibrary(
-      'maps'
-    )) as google.maps.MapsLibrary
+  const { Map } = await loader.importLibrary('maps')
 
-    return new Map(document.getElementById('map') as HTMLElement, {
-      center: initialLocation,
-      zoom: 15,
-    })
+  return new Map(document.getElementById('map') as HTMLElement, {
+    center: initialLocation,
+    zoom: 15,
   })
 }
