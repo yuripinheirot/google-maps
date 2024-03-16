@@ -1,12 +1,23 @@
-import React from 'react'
-import './index.css'
-import { Form } from './components/form'
+import { useEffect } from 'react'
+
+import { Form } from './components/Form'
+import { googleMapsLoader } from './api/google-maps-loader'
+import { MapDisplay } from './components/MapDisplay'
 
 function App() {
+  let maps: google.maps.Map
+
+  useEffect(() => {
+    googleMapsLoader().then((map) => {
+      maps = map
+    })
+  }, [])
+
   return (
-    <main className='App'>
-      <div className='grid py-8 gap-3'>
+    <main className='App h-full flex flex-col'>
+      <div className='flex flex-1 flex-col py-8 gap-3'>
         <Form />
+        <MapDisplay />
       </div>
     </main>
   )
