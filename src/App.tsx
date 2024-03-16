@@ -3,18 +3,17 @@ import { useEffect } from 'react'
 import { Form } from './components/Form'
 import { googleMapsLoader } from './api/google-maps-loader'
 import { MapDisplay } from './components/MapDisplay'
+import { PlaceType } from './protocols/places.type'
 
 function App() {
   const initialLocation = { lat: -5.078869240878618, lng: -42.79595746837029 }
   let placesService: google.maps.places.PlacesService
   let map: google.maps.Map
-  let marker: google.maps.marker.AdvancedMarkerElement
 
   googleMapsLoader().then(
     ({ map: _map, placesService: place, marker: _marker }) => {
       placesService = place
       map = _map
-      marker = _marker
     }
   )
 
@@ -27,12 +26,12 @@ function App() {
     }).setMap(map)
   }
 
-  const searchPlace = () => {
+  const searchPlace = (type: PlaceType) => {
     placesService.nearbySearch(
       {
         location: initialLocation,
         radius: 500,
-        type: 'restaurant',
+        type,
       },
       (results, status) => {
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
@@ -47,9 +46,8 @@ function App() {
   return (
     <main className='App h-full flex flex-col'>
       <div className='flex flex-1 flex-col py-8 gap-3'>
-        <Form handleSearch={() => searchPlace()} />
+        <Form handleSearch={(type) => searchPlace(type)} />
         <MapDisplay />
-        <button onClick={() => searchPlace()}></button>
       </div>
     </main>
   )
