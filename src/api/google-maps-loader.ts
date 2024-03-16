@@ -8,9 +8,17 @@ export const googleMapsLoader = async () => {
   })
 
   const { Map } = await loader.importLibrary('maps')
+  const { PlacesService } = await loader.importLibrary('places')
+  const { AdvancedMarkerElement } = await loader.importLibrary('marker')
 
-  return new Map(document.getElementById('map') as HTMLElement, {
+  const map = new Map(document.getElementById('map') as HTMLElement, {
     center: initialLocation,
     zoom: 15,
   })
+
+  const placesService = new PlacesService(map)
+
+  const marker = new AdvancedMarkerElement()
+
+  return { map, placesService, marker }
 }
