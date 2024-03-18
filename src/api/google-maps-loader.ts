@@ -3,7 +3,7 @@ import { initialLocation } from '../constants/config'
 
 export const googleMapsLoader = async () => {
   const loader = new Loader({
-    apiKey: 'AIzaSyBefyTTZjo6Rmfqul_rGi1QLbtyQmykiNY',
+    apiKey: process.env.GOOGLE_API_KEY as string,
     version: 'weekly',
   })
 
