@@ -1,7 +1,9 @@
 import React from 'react'
+import { Select } from '@chakra-ui/react'
+import { PlacesTypes } from '../protocols/places.type'
 
 type Props = {
-  handleSearch: () => void
+  handleSearch: (type: string) => void
 }
 export const Form = ({ handleSearch }: Props) => {
   return (
@@ -10,17 +12,21 @@ export const Form = ({ handleSearch }: Props) => {
         Google maps!
       </p>
       <div className='flex gap-3'>
-        <input
-          className='border-2 border-gray-300 p-2 rounded-md'
-          type='text'
-          placeholder='place to search...'
-        />
-        <button
-          className='border py-2 px-4 rounded-md bg-blue-400 text-white uppercase hover:bg-blue-500'
-          onClick={handleSearch}
+        <Select
+          placeholder='Selecione um tipo de lugar'
+          size='lg'
+          onChange={(e) => handleSearch(e.target.value)}
         >
-          search
-        </button>
+          {PlacesTypes.map(({ key, value }) => (
+            <option
+              key={key}
+              value={key}
+              defaultValue={PlacesTypes[0].value}
+            >
+              {value}
+            </option>
+          ))}
+        </Select>
       </div>
     </section>
   )

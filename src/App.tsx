@@ -1,32 +1,16 @@
-import { useEffect } from 'react'
-
 import { Form } from './components/Form'
-import { googleMapsLoader } from './api/google-maps-loader'
 import { MapDisplay } from './components/MapDisplay'
-import { PlaceType } from './protocols/places.type'
+import { useMarker } from './hooks/useMarker.hook'
+import { initialLocation } from './constants/config'
+import { useContext } from 'react'
+import { GoogleLoaderContext } from './contexts/google-loader.context'
 
 function App() {
-  const initialLocation = { lat: -5.078869240878618, lng: -42.79595746837029 }
-  let placesService: google.maps.places.PlacesService
-  let map: google.maps.Map
+  const { map, marker, placesService } = useContext(GoogleLoaderContext)
 
-  googleMapsLoader().then(
-    ({ map: _map, placesService: place, marker: _marker }) => {
-      placesService = place
-      map = _map
-    }
-  )
+  const { clearMarkers, createMarker } = useMarker(map as google.maps.Map)
 
-  function createMarker(place: google.maps.places.PlaceResult): void {
-    if (!place.geometry || !place.geometry.location) return
-
-    new google.maps.Marker({
-      position: place.geometry.location,
-      title: place.name,
-    }).setMap(map)
-  }
-
-  const searchPlace = (type: PlaceType) => {
+  const searchPlace = (type: string) => {
     placesService.nearbySearch(
       {
         location: initialLocation,
@@ -34,17 +18,19 @@ function App() {
         type,
       },
       (results, status) => {
+        clearMarkers()
+
         if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-          for (let i = 0; i < results.length; i++) {
-            createMarker(results[i])
-          }
+          results.forEach((place) => {
+            createMarker(place)
+          })
         }
       }
     )
   }
 
   return (
-    <main className='App h-full flex flex-col'>
+    <main className='App h-full flex flex-col '>
       <div className='flex flex-1 flex-col py-8 gap-3'>
         <Form handleSearch={(type) => searchPlace(type)} />
         <MapDisplay />

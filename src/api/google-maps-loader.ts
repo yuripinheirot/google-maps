@@ -1,7 +1,7 @@
 import { Loader } from '@googlemaps/js-api-loader'
+import { initialLocation } from '../constants/config'
 
 export const googleMapsLoader = async () => {
-  const initialLocation = { lat: -5.078869240878618, lng: -42.79595746837029 }
   const loader = new Loader({
     apiKey: 'AIzaSyBefyTTZjo6Rmfqul_rGi1QLbtyQmykiNY',
     version: 'weekly',
