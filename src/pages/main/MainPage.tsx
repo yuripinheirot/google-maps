@@ -31,7 +31,7 @@ export const MainPage = () => {
   const titleQuestion = QuestionsMapped[currentStep]
 
   return (
-    <div className='flex flex-col items-center'>
+    <div className='flex flex-col items-center gap-3'>
       <div className='text-center'>
         <Text
           fontSize={'xx-large'}
