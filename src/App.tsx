@@ -4,6 +4,7 @@ import { useMarker } from './hooks/useMarker.hook'
 import { initialLocation } from './constants/config'
 import { useContext } from 'react'
 import { GoogleLoaderContext } from './contexts/google-loader.context'
+import { Stepper } from './components/Stepper'
 
 function App() {
   const { map, marker, placesService } = useContext(GoogleLoaderContext)
@@ -33,7 +34,8 @@ function App() {
     <main className='App h-full flex flex-col '>
       <div className='flex flex-1 flex-col py-8 gap-3'>
         <Form handleSearch={(type) => searchPlace(type)} />
-        <MapDisplay />
+        {/* <MapDisplay /> */}
+        <Stepper />
       </div>
     </main>
   )
