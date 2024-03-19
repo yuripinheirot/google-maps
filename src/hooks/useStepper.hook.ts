@@ -4,7 +4,7 @@ enum ActionTypesEnum {
   NEXT = 'NEXT',
   PREVIOUS = 'PREVIOUS',
   UPDATE = 'UPDATE',
-  SET_DATA = 'SET_DATA',
+  SET_DATA_CURRENT_STEP = 'SET_DATA',
 }
 
 type Action = { type: ActionTypesEnum; step?: string; value?: unknown }
@@ -30,7 +30,7 @@ const stepperReducer = (state: StepperState, action: Action): StepperState => {
       accumulator: action.value,
       currentIndex: state.steps.length - 1,
     }),
-    [ActionTypesEnum.SET_DATA]: () => ({
+    [ActionTypesEnum.SET_DATA_CURRENT_STEP]: () => ({
       ...state,
       accumulator: {
         ...state.accumulator,
@@ -52,7 +52,7 @@ export const useStepper = <T extends Record<string, unknown>>(
   update: (value: T) => void
   nextStep: () => void
   previousStep: () => void
-  setDataStepper: (value: T[keyof T]) => void
+  setDataCurrentStep: (value: T[keyof T]) => void
   state: StepperState<T>
   getAccumulator: () => T
 } => {
@@ -66,8 +66,12 @@ export const useStepper = <T extends Record<string, unknown>>(
   const isFirstStep = state.currentIndex === 0
   const isLastStep = state.currentIndex === steps.length - 1
 
-  const setDataStepper = (value: unknown) =>
-    dispatch({ type: ActionTypesEnum.SET_DATA, step: currentStep, value })
+  const setDataCurrentStep = (value: unknown) =>
+    dispatch({
+      type: ActionTypesEnum.SET_DATA_CURRENT_STEP,
+      step: currentStep,
+      value,
+    })
 
   const update = (value: unknown) =>
     dispatch({ type: ActionTypesEnum.UPDATE, step: currentStep, value })
@@ -85,7 +89,7 @@ export const useStepper = <T extends Record<string, unknown>>(
     isLastStep,
     nextStep,
     previousStep,
-    setDataStepper,
+    setDataCurrentStep,
     getAccumulator,
     state,
     update,

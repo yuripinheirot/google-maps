@@ -17,14 +17,24 @@ const options: KeyValue[] = [
   },
 ]
 
-export const OccupancyStateStep = () => {
+type Props = {
+  handleSubmitStep: (value: string) => void
+}
+
+export const OccupancyStateStep = ({ handleSubmitStep }: Props) => {
   const optionsButtons = options.map((option) => (
-    <Button key={option.value}>{option.value}</Button>
+    <Button
+      key={option.value}
+      onClick={(e) => handleSubmitStep(e.currentTarget.value)}
+      value={option.key}
+    >
+      {option.value}
+    </Button>
   ))
 
   return (
     <section>
-      <Card>
+      <Card className='flex items-center min-h-52'>
         <CardHeader>
           <Text>Um lugar cheio, ok ou vazio?</Text>
         </CardHeader>

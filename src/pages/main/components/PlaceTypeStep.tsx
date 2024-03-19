@@ -11,11 +11,17 @@ const options: KeyValue[] = [
   { key: 'supermarket', value: 'supermercado' },
 ]
 
-export const PlaceTypeStep = () => {
+type Props = {
+  handleSubmitStep: (value: string) => void
+}
+
+export const PlaceTypeStep = ({ handleSubmitStep }: Props) => {
   const optionsButtons = options.map((option) => (
     <Button
       key={option.value}
       className='uppercase'
+      onClick={(e) => handleSubmitStep(e.currentTarget.value)}
+      value={option.key}
     >
       {option.value}
     </Button>
@@ -23,12 +29,12 @@ export const PlaceTypeStep = () => {
 
   return (
     <section>
-      <Card>
+      <Card className='flex items-center min-h-52'>
         <CardHeader>
           <Text>Por fim, que categoria de lugar você procura?</Text>
         </CardHeader>
         <CardBody>
-          <div className='grid grid-cols-3 gap-1'>{optionsButtons}</div>
+          <div className='grid grid-cols-2 gap-1'>{optionsButtons}</div>
         </CardBody>
       </Card>
     </section>

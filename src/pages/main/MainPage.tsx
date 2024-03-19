@@ -1,5 +1,5 @@
 import { Button, Text } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useStepper } from '../../hooks/useStepper.hook'
 import { Stepper } from '../../components/Stepper'
 import { RangeLocalStep } from './components/RangeLocalStep'
@@ -21,14 +21,30 @@ const QuestionsMapped = {
 }
 
 export const MainPage = () => {
-  const { currentStep, nextStep, previousStep, currentIndex } =
-    useStepper<StepperStateType>([
-      'RANGE_LOCAL',
-      'OCCUPANCY_STATE',
-      'PLACE_TYPE',
-    ])
+  const {
+    currentStep,
+    nextStep,
+    previousStep,
+    currentIndex,
+    setDataCurrentStep,
+    state,
+  } = useStepper<StepperStateType>([
+    'RANGE_LOCAL',
+    'OCCUPANCY_STATE',
+    'PLACE_TYPE',
+  ])
 
   const titleQuestion = QuestionsMapped[currentStep]
+
+  const submitStep = (value: number | string) => {
+    console.log('🚀 ~ submitForm ~ value:', value)
+    setDataCurrentStep(value)
+    nextStep()
+  }
+
+  useEffect(() => {
+    console.log('🚀 ~ state:', state)
+  }, [state])
 
   return (
     <div className='flex flex-col items-center gap-3'>
@@ -45,22 +61,26 @@ export const MainPage = () => {
         steps={[
           {
             label: 'RANGE_LOCAL',
-            Component: <RangeLocalStep />,
+            Component: <RangeLocalStep handleSubmitStep={submitStep} />,
           },
           {
             label: 'OCCUPANCY_STATE',
-            Component: <OccupancyStateStep />,
+            Component: <OccupancyStateStep handleSubmitStep={submitStep} />,
           },
           {
             label: 'PLACE_TYPE',
-            Component: <PlaceTypeStep />,
+            Component: <PlaceTypeStep handleSubmitStep={submitStep} />,
           },
         ]}
         currentIndex={currentIndex}
       />
       <div className='flex gap-2'>
-        <Button onClick={previousStep}>ANTERIOR</Button>
-        <Button onClick={nextStep}>PROXIMO</Button>
+        <Button
+          onClick={previousStep}
+          variant='ghost'
+        >
+          VOLTAR
+        </Button>
       </div>
     </div>
   )

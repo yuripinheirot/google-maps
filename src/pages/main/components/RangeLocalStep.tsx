@@ -27,14 +27,25 @@ const options: KeyValue[] = [
     key: 25000,
   },
 ]
-export const RangeLocalStep = () => {
+
+type Props = {
+  handleSubmitStep: (value: number) => void
+}
+
+export const RangeLocalStep = ({ handleSubmitStep }: Props) => {
   const optionsButtons = options.map((option) => (
-    <Button key={option.value}>{option.value}</Button>
+    <Button
+      key={option.value}
+      onClick={(e) => handleSubmitStep(+e.currentTarget.value)}
+      value={option.key}
+    >
+      {option.value}
+    </Button>
   ))
 
   return (
     <section>
-      <Card>
+      <Card className='flex items-center min-h-52'>
         <CardHeader>
           <Text>Você pensa em ir à algum lugar à qual distância?</Text>
         </CardHeader>
