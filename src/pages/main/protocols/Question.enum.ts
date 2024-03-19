@@ -1,0 +1,5 @@
+export const QuestionsEnum = {
+  RANGE_LOCAL: 'RANGE_LOCAL',
+  OCCUPANCY_STATE: 'OCCUPANCY_STATE',
+  PLACE_TYPE: 'PLACE_TYPE',
+}
