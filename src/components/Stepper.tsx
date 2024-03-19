@@ -14,7 +14,7 @@ export const Stepper = ({ currentIndex, steps }: Props) => {
   const RenderChildren = steps[currentIndex].Component
 
   return (
-    <div>
+    <div className='w-full'>
       <>{RenderChildren}</>
     </div>
   )

@@ -4,6 +4,7 @@ import { initialLocation } from './constants/config'
 import { useContext } from 'react'
 import { GoogleLoaderContext } from './contexts/google-loader.context'
 import { MainPage } from './pages/main/MainPage'
+import { MapDisplay } from './components/MapDisplay'
 
 function App() {
   const { map, marker, placesService } = useContext(GoogleLoaderContext)
@@ -31,10 +32,10 @@ function App() {
 
   return (
     <main className='App h-full flex flex-col '>
-      <div className='flex flex-1 flex-col py-16 gap-3'>
+      <div className='flex flex-1 flex-col py-16 px-6 gap-3'>
         {/* <Form handleSearch={(type) => searchPlace(type)} /> */}
-        {/* <MapDisplay /> */}
         <MainPage />
+        <MapDisplay />
       </div>
     </main>
   )
