@@ -37,14 +37,9 @@ export const MainPage = () => {
   const titleQuestion = QuestionsMapped[currentStep]
 
   const submitStep = (value: number | string) => {
-    console.log('🚀 ~ submitForm ~ value:', value)
     setDataCurrentStep(value)
     nextStep()
   }
-
-  useEffect(() => {
-    console.log('🚀 ~ state:', state)
-  }, [state])
 
   return (
     <div className='flex flex-col items-center gap-3'>
