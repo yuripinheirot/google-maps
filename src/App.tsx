@@ -33,7 +33,7 @@ function App() {
     <main className='App h-full flex flex-col '>
       <div className='flex flex-1 flex-col py-8 gap-3'>
         <Form handleSearch={(type) => searchPlace(type)} />
-        <MapDisplay />
+        {/* <MapDisplay /> */}
       </div>
     </main>
   )
