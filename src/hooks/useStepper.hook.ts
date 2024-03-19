@@ -78,10 +78,6 @@ export const useStepper = <T extends Record<string, unknown>>(
 
   const getAccumulator = () => state.accumulator
 
-  useEffect(() => {
-    console.log({ state, currentStep })
-  }, [state])
-
   return {
     currentStep,
     currentIndex: state.currentIndex,
