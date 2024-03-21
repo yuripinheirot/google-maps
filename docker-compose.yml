@@ -1,0 +1,32 @@
+version: '3.9'
+
+volumes:
+  redis-vol:
+
+networks:
+  maps-network:
+    name: maps-network
+
+services:
+  redis:
+    hostname: redis
+    image: 'redis:alpine'
+    ports:
+      - 6379:6379
+    volumes:
+      - redis-vol:/home/node/app/data/redis
+    networks:
+      - maps-network
+
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=localhost:redis:6379
+      - HTTP_USER=admin
+      - HTTP_PASSWORD=admin
+    ports:
+      - 8081:8081
+    depends_on:
+      - redis
+    networks:
+      - maps-network
