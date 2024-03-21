@@ -1,10 +1,9 @@
 import { Loader } from '@googlemaps/js-api-loader'
 import { initialLocation } from '../constants/config'
-import env from 'react-dotenv'
 
 export const googleMapsLoader = async () => {
   const loader = new Loader({
-    apiKey: env.GOOGLE_API_KEY as string,
+    apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
     version: 'weekly',
   })
 
