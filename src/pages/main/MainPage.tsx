@@ -2,31 +2,27 @@ import { Button, Text } from '@chakra-ui/react'
 import { useStepper } from '../../hooks/useStepper.hook'
 import { Stepper } from '../../components/Stepper'
 import { RangeLocalStep } from './components/RangeLocalStep'
-import { OccupancyStateStep } from './components/OccupancyStateStep'
+import { SpecialtyOfEstablishment } from './components/SpecialtyOfEstablishment'
 import { PlaceTypeStep } from './components/PlaceTypeStep'
-import { QuestionsEnum } from './protocols/Question.enum'
-import { SearchPlacePayloadType } from '../../hooks/useMaps.hook'
+import { useQuery } from '@tanstack/react-query'
+import { useEffect, useState } from 'react'
+import { mapsController } from '../../api/controllers/maps.controller'
+import { initialLocation } from '../../constants/config'
 
 type StepperStateType = {
   RANGE_LOCAL: number
-  OCCUPANCY_STATE: 'empty' | 'ok' | 'full'
+  SPECIALTY_OF_ESTABLISHMENT: string
   PLACE_TYPE: string
 }
 
-const QuestionsMapped = {
-  [QuestionsEnum.RANGE_LOCAL]:
-    'Você pensa em ir à algum lugar à qual distância?',
-  [QuestionsEnum.OCCUPANCY_STATE]: 'Um lugar cheio, ok ou vazio?' /*  */,
-  [QuestionsEnum.PLACE_TYPE]: 'Por fim, que categoria de lugar você procura?',
+type SearchPlacePayloadType = {
+  specialtyOfEstablishment: string
+  placeType: string
+  rangeLocal: number
 }
 
-type Props = {
-  handleSearchPlace: (payload: SearchPlacePayloadType) => void
-}
-
-export const MainPage = ({ handleSearchPlace }: Props) => {
+export const MainPage = () => {
   const {
-    currentStep,
     nextStep,
     previousStep,
     currentIndex,
@@ -35,19 +31,35 @@ export const MainPage = ({ handleSearchPlace }: Props) => {
     isLastStep,
   } = useStepper<StepperStateType>([
     'RANGE_LOCAL',
-    'OCCUPANCY_STATE',
+    'SPECIALTY_OF_ESTABLISHMENT',
     'PLACE_TYPE',
   ])
 
-  const titleQuestion = QuestionsMapped[currentStep]
+  const [query] = useState<SearchPlacePayloadType>({
+    specialtyOfEstablishment: state.accumulator.SPECIALTY_OF_ESTABLISHMENT,
+    placeType: state.accumulator.PLACE_TYPE,
+    rangeLocal: state.accumulator.RANGE_LOCAL,
+  })
+
+  const { refetch, data } = useQuery({
+    queryKey: ['nearbySearch', query],
+    queryFn: () =>
+      mapsController.searchNearbyPlaces({
+        keyword: query.specialtyOfEstablishment,
+        radius: query.rangeLocal,
+        type: query.placeType,
+        lat: initialLocation.lat,
+        lng: initialLocation.lng,
+      }),
+  })
+
+  useEffect(() => {
+    console.log({ data })
+  }, [data])
 
   const submitStep = (value: number | string) => {
     if (isLastStep) {
-      handleSearchPlace({
-        occupancyState: state.accumulator.OCCUPANCY_STATE,
-        placeType: state.accumulator.PLACE_TYPE,
-        rangeLocal: state.accumulator.RANGE_LOCAL,
-      })
+      refetch()
       return
     }
 
@@ -73,8 +85,10 @@ export const MainPage = ({ handleSearchPlace }: Props) => {
             Component: <RangeLocalStep handleSubmitStep={submitStep} />,
           },
           {
-            label: 'OCCUPANCY_STATE',
-            Component: <OccupancyStateStep handleSubmitStep={submitStep} />,
+            label: 'SPECIALTY_OF_ESTABLISHMENT',
+            Component: (
+              <SpecialtyOfEstablishment handleSubmitStep={submitStep} />
+            ),
           },
           {
             label: 'PLACE_TYPE',

@@ -1,5 +1,4 @@
 import { Button, Card, CardHeader, CardBody, Text } from '@chakra-ui/react'
-import React from 'react'
 import { KeyValue } from '../../../protocols/places.type'
 
 const options: KeyValue[] = [
@@ -21,7 +20,7 @@ type Props = {
   handleSubmitStep: (value: string) => void
 }
 
-export const OccupancyStateStep = ({ handleSubmitStep }: Props) => {
+export const SpecialtyOfEstablishment = ({ handleSubmitStep }: Props) => {
   const optionsButtons = options.map((option) => (
     <Button
       key={option.value}
@@ -36,7 +35,7 @@ export const OccupancyStateStep = ({ handleSubmitStep }: Props) => {
     <section>
       <Card className='flex items-center min-h-52'>
         <CardHeader>
-          <Text>Um lugar cheio, ok ou vazio?</Text>
+          <Text>Qual é a especialidade do lugar?</Text>
         </CardHeader>
         <CardBody>
           <div className='grid grid-cols-3 gap-1'>{optionsButtons}</div>
