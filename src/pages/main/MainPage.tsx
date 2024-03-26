@@ -5,7 +5,7 @@ import { RangeLocalStep } from './components/RangeLocalStep'
 import { SpecialtyOfEstablishment } from './components/SpecialtyOfEstablishment'
 import { PlaceTypeStep } from './components/PlaceTypeStep'
 import { useQuery } from '@tanstack/react-query'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { mapsController } from '../../api/controllers/maps.controller'
 import { initialLocation } from '../../constants/config'
 
@@ -13,12 +13,6 @@ type StepperStateType = {
   RANGE_LOCAL: number
   SPECIALTY_OF_ESTABLISHMENT: string
   PLACE_TYPE: string
-}
-
-type SearchPlacePayloadType = {
-  specialtyOfEstablishment: string
-  placeType: string
-  rangeLocal: number
 }
 
 export const MainPage = () => {
@@ -35,37 +29,38 @@ export const MainPage = () => {
     'PLACE_TYPE',
   ])
 
-  const [query] = useState<SearchPlacePayloadType>({
-    specialtyOfEstablishment: state.accumulator.SPECIALTY_OF_ESTABLISHMENT,
-    placeType: state.accumulator.PLACE_TYPE,
-    rangeLocal: state.accumulator.RANGE_LOCAL,
-  })
-
   const { refetch, data } = useQuery({
-    queryKey: ['nearbySearch', query],
+    queryKey: ['nearbySearch', state.accumulator],
     queryFn: () =>
       mapsController.searchNearbyPlaces({
-        keyword: query.specialtyOfEstablishment,
-        radius: query.rangeLocal,
-        type: query.placeType,
+        keyword: state.accumulator.SPECIALTY_OF_ESTABLISHMENT,
+        radius: state.accumulator.RANGE_LOCAL,
+        type: state.accumulator.PLACE_TYPE,
         lat: initialLocation.lat,
         lng: initialLocation.lng,
       }),
+    enabled: false,
   })
 
-  useEffect(() => {
-    console.log({ data })
-  }, [data])
-
   const submitStep = (value: number | string) => {
+    setDataCurrentStep(value)
+
     if (isLastStep) {
-      refetch()
       return
     }
 
-    setDataCurrentStep(value)
     nextStep()
   }
+
+  useEffect(() => {
+    if (
+      state.accumulator.RANGE_LOCAL &&
+      state.accumulator.SPECIALTY_OF_ESTABLISHMENT &&
+      state.accumulator.PLACE_TYPE
+    ) {
+      refetch()
+    }
+  }, [refetch, state])
 
   return (
     <div className='flex flex-col items-center gap-3'>
