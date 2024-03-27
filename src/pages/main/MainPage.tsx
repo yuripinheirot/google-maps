@@ -5,11 +5,11 @@ import { RangeLocalStep } from './components/RangeLocalStep'
 import { SpecialtyOfEstablishment } from './components/SpecialtyOfEstablishment'
 import { PlaceTypeStep } from './components/PlaceTypeStep'
 import { useQuery } from '@tanstack/react-query'
-import { useEffect } from 'react'
 import { mapsController } from '../../api/controllers/maps.controller'
 import { initialLocation } from '../../constants/config'
+import { specialitiesPlaces } from './protocols/speciality-places.const'
 
-type StepperStateType = {
+export type StepperStateType = {
   RANGE_LOCAL: number
   SPECIALTY_OF_ESTABLISHMENT: string
   PLACE_TYPE: string
@@ -23,13 +23,16 @@ export const MainPage = () => {
     setDataCurrentStep,
     state,
     isLastStep,
+    currentStep,
+    removeStep,
+    addStep,
   } = useStepper<StepperStateType>([
     'RANGE_LOCAL',
-    'SPECIALTY_OF_ESTABLISHMENT',
     'PLACE_TYPE',
+    'SPECIALTY_OF_ESTABLISHMENT',
   ])
 
-  const { refetch, data } = useQuery({
+  const { refetch: searchNearby } = useQuery({
     queryKey: ['nearbySearch', state.accumulator],
     queryFn: () =>
       mapsController.searchNearbyPlaces({
@@ -42,25 +45,27 @@ export const MainPage = () => {
     enabled: false,
   })
 
-  const submitStep = (value: number | string) => {
+  const submitStep = (value: string | number) => {
+    const hasSpeciality = specialitiesPlaces[value]
+
     setDataCurrentStep(value)
 
+    if (currentStep === 'PLACE_TYPE' && !hasSpeciality) {
+      removeStep('SPECIALTY_OF_ESTABLISHMENT')
+    }
+    if (currentStep === 'PLACE_TYPE' && hasSpeciality) {
+      addStep('SPECIALTY_OF_ESTABLISHMENT', 2)
+    }
+  }
+
+  const handleNextStep = () => {
     if (isLastStep) {
+      searchNearby()
       return
     }
 
     nextStep()
   }
-
-  useEffect(() => {
-    if (
-      state.accumulator.RANGE_LOCAL &&
-      state.accumulator.SPECIALTY_OF_ESTABLISHMENT &&
-      state.accumulator.PLACE_TYPE
-    ) {
-      refetch()
-    }
-  }, [refetch, state])
 
   return (
     <div className='flex flex-col items-center gap-3'>
@@ -76,18 +81,28 @@ export const MainPage = () => {
       <Stepper
         steps={[
           {
-            label: 'RANGE_LOCAL',
-            Component: <RangeLocalStep handleSubmitStep={submitStep} />,
-          },
-          {
-            label: 'SPECIALTY_OF_ESTABLISHMENT',
             Component: (
-              <SpecialtyOfEstablishment handleSubmitStep={submitStep} />
+              <RangeLocalStep
+                handleSubmitStep={submitStep}
+                state={state.accumulator}
+              />
             ),
           },
           {
-            label: 'PLACE_TYPE',
-            Component: <PlaceTypeStep handleSubmitStep={submitStep} />,
+            Component: (
+              <PlaceTypeStep
+                handleSubmitStep={submitStep}
+                state={state.accumulator}
+              />
+            ),
+          },
+          {
+            Component: (
+              <SpecialtyOfEstablishment
+                handleSubmitStep={submitStep}
+                state={state.accumulator}
+              />
+            ),
           },
         ]}
         currentIndex={currentIndex}
@@ -98,6 +113,12 @@ export const MainPage = () => {
           variant='ghost'
         >
           VOLTAR
+        </Button>
+        <Button
+          onClick={handleNextStep}
+          variant='ghost'
+        >
+          {isLastStep ? 'BUSCAR' : 'PRÓXIMO'}
         </Button>
       </div>
     </div>

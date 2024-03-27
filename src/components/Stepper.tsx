@@ -1,7 +1,4 @@
-import { Text } from '@chakra-ui/react'
-
 type StepComponent = {
-  label: string
   Component: JSX.Element
 }
 

@@ -1,5 +1,6 @@
 import { Button, Card, CardHeader, CardBody, Text } from '@chakra-ui/react'
 import { KeyValue } from '../../../protocols/places.type'
+import { StepperStateType } from '../MainPage'
 
 const options: KeyValue[] = [
   {
@@ -18,14 +19,21 @@ const options: KeyValue[] = [
 
 type Props = {
   handleSubmitStep: (value: string) => void
+  state: StepperStateType
 }
 
-export const SpecialtyOfEstablishment = ({ handleSubmitStep }: Props) => {
+export const SpecialtyOfEstablishment = ({
+  handleSubmitStep,
+  state,
+}: Props) => {
   const optionsButtons = options.map((option) => (
     <Button
+      colorScheme='teal'
       key={option.value}
-      onClick={(e) => handleSubmitStep(e.currentTarget.value)}
-      value={option.key}
+      onClick={() => handleSubmitStep(option.key.toString())}
+      variant={
+        option.key === state.SPECIALTY_OF_ESTABLISHMENT ? 'solid' : 'outline'
+      }
     >
       {option.value}
     </Button>

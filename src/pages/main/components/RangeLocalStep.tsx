@@ -1,5 +1,6 @@
 import { Button, Card, CardBody, CardHeader, Text } from '@chakra-ui/react'
 import { KeyValue } from '../../../protocols/places.type'
+import { StepperStateType } from '../MainPage'
 
 const options: KeyValue[] = [
   {
@@ -30,14 +31,16 @@ const options: KeyValue[] = [
 
 type Props = {
   handleSubmitStep: (value: number) => void
+  state: StepperStateType
 }
 
-export const RangeLocalStep = ({ handleSubmitStep }: Props) => {
+export const RangeLocalStep = ({ handleSubmitStep, state }: Props) => {
   const optionsButtons = options.map((option) => (
     <Button
+      colorScheme='teal'
       key={option.value}
-      onClick={(e) => handleSubmitStep(+e.currentTarget.value)}
-      value={option.key}
+      onClick={() => handleSubmitStep(+option.key)}
+      variant={option.key === state.RANGE_LOCAL ? 'solid' : 'outline'}
     >
       {option.value}
     </Button>
