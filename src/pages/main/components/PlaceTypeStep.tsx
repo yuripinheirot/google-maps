@@ -25,11 +25,10 @@ type Props = {
 export const PlaceTypeStep = ({ handleSubmitStep, state }: Props) => {
   const optionsButtons = options.map((option) => (
     <Button
-      colorScheme='teal'
       key={option.value}
-      className='uppercase'
+      className='uppercase grow'
       onClick={() => handleSubmitStep(option.key.toString())}
-      variant={option.key === state.PLACE_TYPE ? 'solid' : 'outline'}
+      variant={option.key === state.PLACE_TYPE ? 'secondary' : 'unselected'}
     >
       {option.value}
     </Button>
@@ -42,7 +41,7 @@ export const PlaceTypeStep = ({ handleSubmitStep, state }: Props) => {
           <Text>Qual categoria de lugar você procura?</Text>
         </CardHeader>
         <CardBody>
-          <div className='grid grid-cols-2 gap-1'>{optionsButtons}</div>
+          <div className='flex flex-wrap gap-1'>{optionsButtons}</div>
         </CardBody>
       </Card>
     </section>

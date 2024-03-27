@@ -37,10 +37,9 @@ type Props = {
 export const RangeLocalStep = ({ handleSubmitStep, state }: Props) => {
   const optionsButtons = options.map((option) => (
     <Button
-      colorScheme='teal'
       key={option.value}
       onClick={() => handleSubmitStep(+option.key)}
-      variant={option.key === state.RANGE_LOCAL ? 'solid' : 'outline'}
+      variant={option.key === state.RANGE_LOCAL ? 'secondary' : 'unselected'}
     >
       {option.value}
     </Button>

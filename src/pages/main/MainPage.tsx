@@ -7,7 +7,8 @@ import { PlaceTypeStep } from './components/PlaceTypeStep'
 import { useQuery } from '@tanstack/react-query'
 import { mapsController } from '../../api/controllers/maps.controller'
 import { initialLocation } from '../../constants/config'
-import { specialitiesPlaces } from './protocols/speciality-places.const'
+import { specialityPlaces } from './protocols/speciality-places.const'
+import { useEffect } from 'react'
 
 export type StepperStateType = {
   RANGE_LOCAL: number
@@ -46,21 +47,25 @@ export const MainPage = () => {
   })
 
   const submitStep = (value: string | number) => {
-    const hasSpeciality = specialitiesPlaces[value]
+    const hasSpeciality = specialityPlaces[value]
 
     setDataCurrentStep(value)
 
     if (currentStep === 'PLACE_TYPE' && !hasSpeciality) {
       removeStep('SPECIALTY_OF_ESTABLISHMENT')
     }
-    if (currentStep === 'PLACE_TYPE' && hasSpeciality) {
+    if (
+      currentStep === 'PLACE_TYPE' &&
+      hasSpeciality &&
+      !state.steps.includes('SPECIALTY_OF_ESTABLISHMENT')
+    ) {
       addStep('SPECIALTY_OF_ESTABLISHMENT', 2)
     }
   }
 
   const handleNextStep = () => {
     if (isLastStep) {
-      searchNearby()
+      console.log('searchNearby()')
       return
     }
 
@@ -116,7 +121,7 @@ export const MainPage = () => {
         </Button>
         <Button
           onClick={handleNextStep}
-          variant='ghost'
+          isDisabled={!state.accumulator[currentStep as keyof StepperStateType]}
         >
           {isLastStep ? 'BUSCAR' : 'PRÓXIMO'}
         </Button>
